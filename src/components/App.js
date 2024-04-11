@@ -4,9 +4,11 @@ import Main from './Main'
 import Loader from './Loader'
 import Error from './Error'
 import StartScreen from './StartScreen'
+import Question from './Question'
 
 const initialState = {
   questions: [],
+  index: 0,
   status: 'loading'
 }
 
@@ -16,6 +18,8 @@ const reducer = (state, action) => {
     return {...state, questions: action.payload, status: 'ready'}
     case 'dataFailed':
       return {...state, status: 'error'}
+    case 'startQuiz': 
+      return {...state, status: 'active'}
     default:
      throw new Error("Unknown action type")
   }
@@ -23,7 +27,7 @@ const reducer = (state, action) => {
 
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState)
-  const {questions, status} = state
+  const {questions, status, index} = state
   const questionsQty = questions.length
 
   useEffect(() => {
@@ -33,12 +37,17 @@ function App() {
     .catch(err => dispatch({ type: 'dataFailed'}))
   }, [])
 
+  const handleStart = () => {
+    dispatch({type: 'startQuiz'})
+  }
+
   return <div className="app">
     <Header />
     <Main>
       {status === 'loading' && <Loader />}
       {status === 'error' && <Error />}
-      {status === 'ready' && <StartScreen quantity={questionsQty}/>}
+      {status === 'ready' && <StartScreen quantity={questionsQty} onStartQuiz={handleStart}/>}
+      {status === 'active' && <Question question={questions[index]} />}
     </Main>
   </div>
 }
