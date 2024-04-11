@@ -7,6 +7,7 @@ import StartScreen from "./StartScreen";
 import Question from "./Question";
 import NextButton from "./NextButton";
 import ProgressBar from "./ProgressBar";
+import FinishScreen from "./FinishScreen";
 
 const initialState = {
   questions: [],
@@ -14,6 +15,7 @@ const initialState = {
   status: "loading",
   answer: null,
   points: 0,
+  highscore: 0,
 };
 
 const reducer = (state, action) => {
@@ -38,6 +40,22 @@ const reducer = (state, action) => {
     case "nextQuestion": {
       return { ...state, index: state.index + 1, answer: null };
     }
+    case "finishQuiz": {
+      return {
+        ...state,
+        status: "finished",
+        highscore:
+          state.points > state.highscore ? state.points : state.highscore,
+      };
+    }
+    case "restart": {
+      return {
+        ...initialState,
+        questions: state.questions,
+        status: "ready",
+        highscore: state.highscore,
+      };
+    }
     default:
       throw new Error("Unknown action type");
   }
@@ -45,7 +63,7 @@ const reducer = (state, action) => {
 
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { questions, status, index, answer, points } = state;
+  const { questions, status, index, answer, points, highscore } = state;
 
   const questionsQty = questions.length;
   const totalPoints = questions.reduce((prev, cur) => prev + cur.points, 0);
@@ -81,8 +99,21 @@ function App() {
               answer={answer}
               dispatch={dispatch}
             />
-            <NextButton dispatch={dispatch} answer={answer} />
+            <NextButton
+              dispatch={dispatch}
+              answer={answer}
+              index={index}
+              questionsQty={questionsQty}
+            />
           </>
+        )}
+        {status === "finished" && (
+          <FinishScreen
+            points={points}
+            totalPoints={totalPoints}
+            highscore={highscore}
+            dispatch={dispatch}
+          />
         )}
       </Main>
     </div>
