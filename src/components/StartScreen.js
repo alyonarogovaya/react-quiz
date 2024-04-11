@@ -1,10 +1,13 @@
-function StartScreen({quantity, onStartQuiz }) {
+function StartScreen({quantity, dispatch }) {
+  const handleStart = () => {
+    dispatch({type: 'startQuiz'})
+  }
   
   return (
     <div className="start-wrapper">
       <h2>Welcome to The React Quiz!</h2>
       <h3> {quantity} question to test your React mastery</h3>
-      <button className="btn btn-ui" onClick={onStartQuiz}>Let's start</button>
+      <button className="btn btn-ui" onClick={handleStart}>Let's start</button>
     </div>
   )
 }
