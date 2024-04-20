@@ -1,15 +1,21 @@
-function StartScreen({quantity, dispatch }) {
+import { useQuiz } from "../context/QuizContext";
+
+function StartScreen() {
+  const { quantity, dispatch } = useQuiz();
+
   const handleStart = () => {
-    dispatch({type: 'startQuiz'})
-  }
-  
+    dispatch({ type: "startQuiz" });
+  };
+
   return (
     <div className="start-wrapper">
       <h2>Welcome to The React Quiz!</h2>
       <h3> {quantity} question to test your React mastery</h3>
-      <button className="btn btn-ui" onClick={handleStart}>Let's start</button>
+      <button className="btn btn-ui" onClick={handleStart}>
+        Let's start
+      </button>
     </div>
-  )
+  );
 }
 
-export default StartScreen
+export default StartScreen;
